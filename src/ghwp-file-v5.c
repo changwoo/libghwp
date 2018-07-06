@@ -667,18 +667,18 @@ static void ghwp_file_v5_decode_file_header (GHWPFileV5 *file)
         memcpy (&prop, buf + 36, 4);
         prop = GUINT32_FROM_LE(prop);
 
-        if ((prop & (1 <<  0)) == 1) file->is_compress            = TRUE;
-        if ((prop & (1 <<  1)) == 1) file->is_encrypt             = TRUE;
-        if ((prop & (1 <<  2)) == 1) file->is_distribute          = TRUE;
-        if ((prop & (1 <<  3)) == 1) file->is_script              = TRUE;
-        if ((prop & (1 <<  4)) == 1) file->is_drm                 = TRUE;
-        if ((prop & (1 <<  5)) == 1) file->is_xml_template        = TRUE;
-        if ((prop & (1 <<  6)) == 1) file->is_history             = TRUE;
-        if ((prop & (1 <<  7)) == 1) file->is_sign                = TRUE;
-        if ((prop & (1 <<  8)) == 1) file->is_certificate_encrypt = TRUE;
-        if ((prop & (1 <<  9)) == 1) file->is_sign_spare          = TRUE;
-        if ((prop & (1 << 10)) == 1) file->is_certificate_drm     = TRUE;
-        if ((prop & (1 << 11)) == 1) file->is_ccl                 = TRUE;
+        if (prop & (1 <<  0)) file->is_compress            = TRUE;
+        if (prop & (1 <<  1)) file->is_encrypt             = TRUE;
+        if (prop & (1 <<  2)) file->is_distribute          = TRUE;
+        if (prop & (1 <<  3)) file->is_script              = TRUE;
+        if (prop & (1 <<  4)) file->is_drm                 = TRUE;
+        if (prop & (1 <<  5)) file->is_xml_template        = TRUE;
+        if (prop & (1 <<  6)) file->is_history             = TRUE;
+        if (prop & (1 <<  7)) file->is_sign                = TRUE;
+        if (prop & (1 <<  8)) file->is_certificate_encrypt = TRUE;
+        if (prop & (1 <<  9)) file->is_sign_spare          = TRUE;
+        if (prop & (1 << 10)) file->is_certificate_drm     = TRUE;
+        if (prop & (1 << 11)) file->is_ccl                 = TRUE;
     }
 
     buf = (g_free (buf), NULL);
@@ -793,7 +793,7 @@ static void _ghwp_file_v5_make_stream (GHWPFileV5 *file)
             }
             _g_object_unref0 (input);
         } else if (g_str_equal(entry, "BodyText") ||
-                   g_str_equal(entry, "VeiwText")) {
+                   g_str_equal(entry, "ViewText")) {
             GsfInfile* infile;
 
             _g_array_free0 (file->section_streams);
@@ -814,9 +814,9 @@ static void _ghwp_file_v5_make_stream (GHWPFileV5 *file)
             for (j = 0; j < num_children; j++) {
                 input = gsf_infile_child_by_index (infile, j);
                 GsfInfile *section = _g_object_ref0 (input);
-                num_children = gsf_infile_num_children (section);
+                gint num_section_children = gsf_infile_num_children (section);
 
-                if (num_children > 0) {
+                if (num_section_children > 0) {
                     fprintf (stderr, "invalid section\n");
                 }
 
